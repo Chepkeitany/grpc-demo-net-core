@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option csharp_namespace = "BillingServer";
+
+// like a C# namespace that will allow you to import this proto file in other files
+package store;
+
+// The billing service definition.
+service Billing {
+  // A unary RPC
+  // 
+  // Client says hi to the teller(server) at the counter
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  // A server streaming RPC
+  //
+  // Obtains a list of all the items that are currently in stock. 
+  // The server streams back all the items in stock.
+  rpc GetItemsInStock(AllItemsRequest) returns (stream Item);
+
+
+  // A client streaming RPC
+  //
+  // The client sends a stream of messages containing the items in the shopping cart.
+  // The server returns a single response with the final bill.
+  rpc ProcessAllItems(stream CartItem) returns (Bill);
+
+
+  // A bi-directional streaming RPC
+  // 
+  // The client sends one cart item at a time and the teller bills the items and 
+  // the server processes the cart item as soon as it is received.
+  // The final bill is sent when the client is done sending all the items.
+  rpc ProcessEachItemOneByOne(stream CartItem) returns (stream Bill);
+}
+
+// The request message containing the customers's name and greeting
+message HelloRequest {
+  string name = 1;
+  string message = 2;
+}
+
+// The response message containing the storekeeper's name and a message
+message HelloReply {
+   string name = 1;
+   string message = 2;
+}
+
+// Empty message to fetch all items in store
+message AllItemsRequest {
+   string message = 1;
+}
+
+// An item in the store
+message Item {
+	string itemName = 1;
+	float price = 2;
+}
+
+// An item in the customer's basket
+message CartItem {
+	Item item = 1;
+	int32 quantity = 2;
+}
+
+// The bill for the items that the client has purchased.
+message Bill {
+	string billType = 1;
+	int32 totalQuantity = 2;
+	float totalPrice = 3;
+}
