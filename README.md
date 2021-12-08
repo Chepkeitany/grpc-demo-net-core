@@ -1,1 +1,1 @@
-# grpc-demo
+# grpc-demo in .NET Core
